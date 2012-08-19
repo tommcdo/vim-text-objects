@@ -1,26 +1,15 @@
 " a text object for parts of a path (between /'s)
-function! s:InnerPathTextObject(c, m)
-	exec 'silent! normal! F/lv'.a:c.'t/'
-	if a:m == "v"
-		silent! call repeat#set("\<Plug>VIPathTxtObj", a:c)
-	elseif a:m == "o"
-		silent! call repeat#set("\<Plug>IPathTxtObj", a:c)
-	endif
+function! s:PathTextObject(c, o, m)
+	let o = (a:o == "a" ? "f" : "t")
+	let m = (a:m == "v" ? "V" : "")
+	exec 'silent! normal! F/lv'.a:c.o.'/'
+	silent! call repeat#set("\<Plug>".m.toupper(a:o)."PathTxtObj", a:c)
 endfunction
 
-function! s:APathTextObject(c, m)
-	exec 'silent! normal! F/lv'.a:c.'f/'
-	if a:m == "v"
-		silent! call repeat#set("\<Plug>VAPathTxtObj", a:c)
-	elseif a:m == "o"
-		silent! call repeat#set("\<Plug>APathTxtObj", a:c)
-	endif
-endfunction
-
-vnoremap <silent> <script> <Plug>VIPathTxtObj :<C-U>call <SID>InnerPathTextObject(v:count1, "v")<CR>
-onoremap <silent> <script> <Plug>IPathTxtObj :<C-U>call <SID>InnerPathTextObject(v:count1, "o")<CR>
-vnoremap <silent> <script> <Plug>VAPathTxtObj :<C-U>call <SID>APathTextObject(v:count1, "v")<CR>
-onoremap <silent> <script> <Plug>APathTxtObj :<C-U>call <SID>APathTextObject(v:count1, "o")<CR>
+vnoremap <silent> <script> <Plug>VIPathTxtObj :<C-U>call <SID>PathTextObject(v:count1, "i", "v")<CR>
+onoremap <silent> <script> <Plug>IPathTxtObj :<C-U>call <SID>PathTextObject(v:count1, "i", "o")<CR>
+vnoremap <silent> <script> <Plug>VAPathTxtObj :<C-U>call <SID>PathTextObject(v:count1, "a", "v")<CR>
+onoremap <silent> <script> <Plug>APathTxtObj :<C-U>call <SID>PathTextObject(v:count1, "a", "o")<CR>
 
 vmap <silent> i/ <Plug>VIPathTxtObj
 omap <silent> i/ <Plug>IPathTxtObj
